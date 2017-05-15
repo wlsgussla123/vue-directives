@@ -41,10 +41,12 @@
         <button id="give-up" @click="giveUp">GIVE UP</button>
       </div>
     </section>
-    <section class="row log">
+    <section class="row log" v-show="turns.length > 0">
       <div class="small-12 columns">
         <ul>
-          <li>
+          <li  v-for="turn in turns"
+                :class="{ 'player-turn' : turn.isPlayer, 'monster-turn' : !turn.isPlayer }">
+            {{ turn.text }}
           </li>
         </ul>
       </div>
@@ -57,6 +59,7 @@
       playerHealth: 100,
       monsterHealth: 100,
       gameIsRunning: false,
+      turns: [],
     },
     methods: {
       init: function() {
@@ -71,44 +74,43 @@
         this.gameIsRunning = true;
         this.initHealth();
       },
+
       attack: function() {
-        this.monsterHealth -= this.calculateDamage(10, 3);
+        var damage = this.calculateDamage(10, 3);
+        this.monsterHealth -= damage;
         if (this.checkHealth()) {
           return;
         }
+
+        this.turns.unshift({
+          text: 'Player hits Monster for ' + damage,
+          isPlayer: true,
+        });
 
         this.monsterAttacks();
         this.checkHealth();
       },
       monsterAttacks: function() {
-        this.playerHealth -= this.calculateDamage(15, 5);
+        var damage = this.calculateDamage(15, 5);
+        this.playerHealth -= damage;
+        this.turns.unshift({
+          text: 'Monster hits Player for ' + damage,
+          isPlayer: false,
+        });
       },
       specialAttack: function() {
-        this.monsterHealth -= this.calculateDamage(20, 10);
+        var damage = this.calculateDamage(20,10);
+        this.monsterHealth -= damage;
         if (this.checkHealth()) {
           return;
         }
+        this.turns.unshift({
+          text: 'Player big hits Monster for ' + damage,
+          isPlayer: true,
+        });
 
         this.monsterAttacks();
         this.checkHealth();
-      },
-      heal: function() {
-        if (this.playerHealth <= 90) {
-          this.playerHealth += 10;
-        } else {
-          this.playerHealth = 100;
-        }
-
-        this.monsterAttacks();
-      },
-      giveUp: function() {
-        alert("You lost !");
-
-          if (confirm("Do you want to replay?") == true) {
-            this.initHealth();
-          } else {
-            this.init();
-          }
       },
       calculateDamage: function(max, min) {
         var damage = Math.max(Math.floor((Math.random() * max)) + min, min);
@@ -124,6 +126,7 @@
           } else {
             this.init();
           }
+          this.turns = [];
 
           return true;
         } else if (this.playerHealth <= 0) {
@@ -135,10 +138,36 @@
           } else {
             this.init();
           }
+          this.turns = [];
 
           return true;
         }
         return false;
+      },
+
+      heal: function() {
+        if (this.playerHealth <= 90) {
+          this.playerHealth += 10;
+        } else {
+          this.playerHealth = 100;
+        }
+        this.turns.unshift({
+          text: 'Player heals  for ' + 10,
+          isPlayer: true,
+        });
+
+        this.monsterAttacks();
+      },
+      giveUp: function() {
+        alert("You lost !");
+
+        if (confirm("Do you want to replay?") == true) {
+          this.initHealth();
+        } else {
+          this.init();
+        }
+
+        this.turns = [];
       },
     }
   });
