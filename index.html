@@ -59,28 +59,38 @@
       gameIsRunning: false,
     },
     methods: {
-      init : function() {
+      init: function() {
         this.gameIsRunning = false;
         this.initHealth();
       },
-      initHealth : function() {
+      initHealth: function() {
         this.playerHealth = 100;
         this.monsterHealth = 100;
       },
-      startGame : function() {
+      startGame: function() {
         this.gameIsRunning = true;
         this.initHealth();
       },
       attack: function() {
         this.monsterHealth -= this.calculateDamage(10, 3);
-        if(this.checkHealth()) {
-            return ;
+        if (this.checkHealth()) {
+          return;
         }
-        this.playerHealth -= this.calculateDamage(15, 5);
+
+        this.monsterAttacks();
         this.checkHealth();
       },
+      monsterAttacks: function() {
+        this.playerHealth -= this.calculateDamage(15, 5);
+      },
       specialAttack: function() {
+        this.monsterHealth -= this.calculateDamage(20, 10);
+        if (this.checkHealth()) {
+          return;
+        }
 
+        this.monsterAttacks();
+        this.checkHealth();
       },
       heal: function() {
 
@@ -97,7 +107,7 @@
           this.monsterHealth = 0;
           alert("You win !");
 
-          if(confirm("Do you want to replay?") == true) {
+          if (confirm("Do you want to replay?") == true) {
             this.initHealth();
           } else {
             this.init();
@@ -108,7 +118,7 @@
           this.playerHealth = 0;
           alert("You lost !");
 
-          if(confirm("Do you want to replay?") == true) {
+          if (confirm("Do you want to replay?") == true) {
             this.initHealth();
           } else {
             this.init();
