@@ -36,12 +36,12 @@
       </div>
     </section>
 
-    <section class="row controls">
+    <section class="row controls" v-if="!gameIsRunning">
       <div class="small-12 columns">
-        <button id="start-game" @click = "gameIsRunning = !gameIsRunning">START NEW GAME</button>
+        <button id="start-game" @click="isRunning">START NEW GAME</button>
       </div>
     </section>
-    <section class="row controls">
+    <section class="row controls" v-if="gameIsRunning">
       <div class="small-12 columns">
         <button id="attack">ATTACK</button>
         <button id="special-attack">SPECIAL ATTACK</button>
@@ -66,6 +66,11 @@
             playerHealth: 100,
             monsterHealth: 100,
             gameIsRunning: false,
+        },
+        methods : {
+            isRunning : function() {
+                this.gameIsRunning = !this.gameIsRunning;
+            }
         }
     });
   </script>
