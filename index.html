@@ -102,7 +102,13 @@
         this.monsterAttacks();
       },
       giveUp: function() {
+        alert("You lost !");
 
+          if (confirm("Do you want to replay?") == true) {
+            this.initHealth();
+          } else {
+            this.init();
+          }
       },
       calculateDamage: function(max, min) {
         var damage = Math.max(Math.floor((Math.random() * max)) + min, min);
