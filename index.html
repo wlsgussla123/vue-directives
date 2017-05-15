@@ -14,28 +14,20 @@
       <div class="small-6 columns">
         <h1 class="text-center">YOU</h1>
         <div class="healthbar">
-          <div
-                class="healthbar text-center"
-                style="background-color: green; margin: 0; color: white;"
-                :style="{ width : playerHealth + '%' }">
+          <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;" :style="{ width : playerHealth + '%' }">
             {{ playerHealth }}
           </div>
         </div>
       </div>
-
       <div class="small-6 columns">
         <h1 class="text-center">MONSTER</h1>
         <div class="healthbar">
-          <div
-                class="healthbar text-center"
-                style="background-color: green; margin: 0; color: white;"
-                :style="{ width : monsterHealth + '%' }">
+          <div class="healthbar text-center" style="background-color: green; margin: 0; color: white;" :style="{ width : monsterHealth + '%' }">
             {{ monsterHealth }}
           </div>
         </div>
       </div>
     </section>
-
     <section class="row controls" v-if="!gameIsRunning">
       <div class="small-12 columns">
         <button id="start-game" @click="isRunning">START NEW GAME</button>
@@ -43,10 +35,10 @@
     </section>
     <section class="row controls" v-if="gameIsRunning">
       <div class="small-12 columns">
-        <button id="attack">ATTACK</button>
-        <button id="special-attack">SPECIAL ATTACK</button>
-        <button id="heal">HEAL</button>
-        <button id="give-up">GIVE UP</button>
+        <button id="attack" @click="attack">ATTACK</button>
+        <button id="special-attack" @click="specialAttack">SPECIAL ATTACK</button>
+        <button id="heal" @click="heal">HEAL</button>
+        <button id="give-up" @click="giveUp">GIVE UP</button>
       </div>
     </section>
     <section class="row log">
@@ -58,21 +50,60 @@
       </div>
     </section>
   </div>
-
   <script>
-    new Vue({
-        el: '#app',
-        data: {
-            playerHealth: 100,
-            monsterHealth: 100,
-            gameIsRunning: false,
-        },
-        methods : {
-            isRunning : function() {
-                this.gameIsRunning = !this.gameIsRunning;
-            }
+  new Vue({
+    el: '#app',
+    data: {
+      playerHealth: 100,
+      monsterHealth: 100,
+      gameIsRunning: false,
+    },
+    methods: {
+      isRunning: function() {
+        this.gameIsRunning = !this.gameIsRunning;
+        this.playerHealth = 100;
+        this.monsterHealth = 100;
+      },
+
+      attack: function() {
+        var max = 10;
+        var min = 3;
+        var damage = Math.max(Math.floor((Math.random() * max)) + min, min);
+
+        this.monsterHealth -= damage;
+        if (this.monsterHealth <= 0) {
+          this.monsterHealth = 0;
+          alert("You win !");
+          this.gameIsRunning = !this.gameIsRunning;
+
+          return;
         }
-    });
+
+        max = 15;
+        min = 5;
+        damage = Math.max(Math.floor((Math.random() * max)) + min, min);
+
+        this.playerHealth -= damage;
+        if (this.playerHealth <= 0) {
+          this.playerHealth = 0;
+          alert("You lost !");
+          this.gameIsRunning = !this.gameIsRunning;
+        }
+      },
+
+      specialAttack: function() {
+
+      },
+
+      heal: function() {
+
+      },
+
+      giveUp: function() {
+
+      }
+    }
+  });
   </script>
 </body>
 
