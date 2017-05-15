@@ -30,7 +30,7 @@
     </section>
     <section class="row controls" v-if="!gameIsRunning">
       <div class="small-12 columns">
-        <button id="start-game" @click="isRunning">START NEW GAME</button>
+        <button id="start-game" @click="startGame">START NEW GAME</button>
       </div>
     </section>
     <section class="row controls" v-if="gameIsRunning">
@@ -59,49 +59,65 @@
       gameIsRunning: false,
     },
     methods: {
-      isRunning: function() {
-        this.gameIsRunning = !this.gameIsRunning;
+      init : function() {
+        this.gameIsRunning = false;
+        this.initHealth();
+      },
+      initHealth : function() {
         this.playerHealth = 100;
         this.monsterHealth = 100;
       },
-
-      attack: function() {
-        var max = 10;
-        var min = 3;
-        var damage = Math.max(Math.floor((Math.random() * max)) + min, min);
-
-        this.monsterHealth -= damage;
-        if (this.monsterHealth <= 0) {
-          this.monsterHealth = 0;
-          alert("You win !");
-          this.gameIsRunning = !this.gameIsRunning;
-
-          return;
-        }
-
-        max = 15;
-        min = 5;
-        damage = Math.max(Math.floor((Math.random() * max)) + min, min);
-
-        this.playerHealth -= damage;
-        if (this.playerHealth <= 0) {
-          this.playerHealth = 0;
-          alert("You lost !");
-          this.gameIsRunning = !this.gameIsRunning;
-        }
+      startGame : function() {
+        this.gameIsRunning = true;
+        this.initHealth();
       },
-
+      attack: function() {
+        this.monsterHealth -= this.calculateDamage(10, 3);
+        if(this.checkHealth()) {
+            return ;
+        }
+        this.playerHealth -= this.calculateDamage(15, 5);
+        this.checkHealth();
+      },
       specialAttack: function() {
 
       },
-
       heal: function() {
 
       },
-
       giveUp: function() {
 
-      }
+      },
+      calculateDamage: function(max, min) {
+        var damage = Math.max(Math.floor((Math.random() * max)) + min, min);
+        return damage;
+      },
+      checkHealth: function() {
+        if (this.monsterHealth <= 0) {
+          this.monsterHealth = 0;
+          alert("You win !");
+
+          if(confirm("Do you want to replay?") == true) {
+            this.initHealth();
+          } else {
+            this.init();
+          }
+
+          return true;
+        } else if (this.playerHealth <= 0) {
+          this.playerHealth = 0;
+          alert("You lost !");
+
+          if(confirm("Do you want to replay?") == true) {
+            this.initHealth();
+          } else {
+            this.init();
+          }
+
+          return true;
+        }
+        return false;
+      },
     }
   });
   </script>
